@@ -12,9 +12,6 @@ class DoubleConv(nn.Module):
 		# The super keyword allows for both the nn.Module init and our custom init to run
 		# If I didn't include the super it would just run my init
 		super(DoubleConv, self).__init__()
-
-		# This initialization redfines the self.conv function which is typically 
-		# initialized with a self.conv function
 		self.conv = nn.Sequential(
 			nn.Conv2d(in_channels,out_channels, kernel_size = 3,
 					  stride = 1, padding = 1, bias=False),
@@ -39,7 +36,7 @@ class UNET(nn.Module):
 		super(UNET, self).__init__()
 		self.ups = nn.ModuleList()		#For the upsteps, acts like a normal list but is properly registered
 		self.downs = nn.ModuleList()	#For the down steps
-		self.pool = nn.MaxPool2d(kernel_size=2,stride=2) #Defines the maxpool layer
+		self.pool = nn.MaxPool2d(kernel_size=2,stride=2)
 
 		# Down sampling part of UNET
 		for feature in features:
@@ -65,11 +62,11 @@ class UNET(nn.Module):
 	def forward(self, x):
 	 	skip_connections = []
 
-	 	#Steps going down the U of the Unet
+	 	#Downward steps
 	 	for down in self.downs:
 	 		x = down(x)
-	 		skip_connections.append(x) #Appends X to the skip connections for use later
-	 		x = self.pool(x)		   #Max pooling (see function __init__)
+	 		skip_connections.append(x)
+	 		x = self.pool(x)
 
 
  		x = self.bottleneck(x)
@@ -102,8 +99,3 @@ def test():
 
 if __name__ == "__main__":
 	test() 
-
-
-
-
-

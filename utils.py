@@ -26,15 +26,14 @@ def get_loaders(
 	pin_memory=True,
 ):
 
-	#Create Carvana dataset for training data
+	#Create Carvana dataset
 	train_ds = CarvanaDataset(
 		image_dir = train_dir,
 		mask_dir = train_maskdir,
 		transform = train_transform,
 	)
 
-	#Specifying the loader used to load data
-	#In this case the batch_size is the number of images to load***
+	#Specifying the training dataset
 	train_loader = DataLoader(
 		train_ds,
 		batch_size=batch_size,
@@ -58,7 +57,7 @@ def get_loaders(
 	)
 
 	return train_loader, val_loader
-
+	
 # Checks the accuracy at each iteration
 def check_accuracy(loader, model, device="cuda"):
 	num_correct = 0
@@ -74,8 +73,10 @@ def check_accuracy(loader, model, device="cuda"):
 			preds = (preds > 0.5).float() # for binary this will be update for multi-class
 			num_correct += (preds==y).sum()
 			num_pixels += torch.numel(preds)
-			dice_score += (2 * (preds * y).sum()) / (preds+y.sum() + 1e-8) #Only for binary as formatted
-
+			dice_score += (2 * (preds * y).sum()) / (
+				(preds + y).sum() + 1e-8
+				)
+            
 	print(
 		f"Got {num_correct}/{num_pixels} with acc {num_correct/num_pixels*100:.2f}"
 	)
@@ -84,7 +85,7 @@ def check_accuracy(loader, model, device="cuda"):
 
 # Saves the output of the U-NET as a image
 def save_predictions_as_imgs(
-	loader, model, folders="saved_images/", devices="cuda"
+	loader, model, folder="saved_images/", device="cuda"
 ):
 	model.eval()
 	for idx, (x,y) in enumerate(loader):
@@ -95,7 +96,7 @@ def save_predictions_as_imgs(
 		torchvision.utils.save_image(
 			preds, f"{folder}/pred_{idx}.png"
 		)
-		torchvision.utils.save_image(y.unsqueeze(1), f"{folders}{idx}.png")
+		torchvision.utils.save_image(y.unsqueeze(1), f"{folder}{idx}.png")
 
 	model.train()
 
