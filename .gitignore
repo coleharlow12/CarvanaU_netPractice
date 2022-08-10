@@ -1,0 +1,29 @@
+#Ignore MAC file system files
+.mac
+.DS_store
+
+#Ignore Jupiter Checkpoint files
+*.ipynb_checkpoints
+
+#All files in the saved_images directory
+/saved_images
+
+#All files in the data folder
+/data
+
+#All saved model zip files
+*.py.zip
+*.zip
+
+#All training checkpoints 
+*.pth.tar
+*.tar
+*.pth
+
+#Ignores virtual environment
+/u_net
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
